@@ -31,4 +31,14 @@ class UserDetailService {
             if (num == 1) GeneralSuccessResponse else throw RuntimeException()
         }
     }
+
+    fun updatePicture(url: String): GeneralSuccessResponse {
+        val num = repository.updatePicture(url)
+        return if (num == 1) GeneralSuccessResponse else throw RuntimeException()
+    }
+
+    fun updateEmail(email: String): GeneralSuccessResponse {
+        val num = repository.updateEmail(email)
+        return if (num == 1) GeneralSuccessResponse else throw RuntimeException()
+    }
 }

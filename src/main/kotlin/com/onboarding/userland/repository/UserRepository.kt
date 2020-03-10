@@ -22,4 +22,19 @@ interface UserRepository : CrudRepository<User, Long>, JpaSpecificationExecutor<
                         @Param("bio") bio: String,
                         @Param("web") web: String
     ): Int
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE User u SET u.picture = :picture WHERE u.id = 1")
+    fun updatePicture(@Param("picture") picture: String): Int
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE User u SET u.email = :email WHERE u.id = 1")
+    fun updateEmail(@Param("email") email: String): Int
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE User u SET u.password = :password WHERE u.id = 1")
+    fun updatePassword(@Param("password") password: String): Int
 }

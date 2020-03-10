@@ -24,4 +24,14 @@ class UserDetailController {
     fun updateBasicInfo(@RequestBody @Valid basicInfo: BasicInfoRequest): GeneralSuccessResponse {
         return service.updateBasicInfo(basicInfo)
     }
+
+    @PostMapping
+    fun updatePicture(@RequestBody @Valid url: String): GeneralSuccessResponse {
+        return service.updatePicture(url)
+    }
+
+    @PostMapping
+    fun updateEmail(@RequestBody @Valid email: String): GeneralSuccessResponse {
+        return service.updateEmail(email)
+    }
 }
