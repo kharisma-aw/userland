@@ -21,11 +21,13 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-mail")
 	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.boot:spring-boot-starter-web")
-//	implementation("org.springframework.session:spring-session-core")
-//	implementation("org.springframework.session:spring-session-jdbc")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+	implementation("io.jsonwebtoken:jjwt-api:0.11.0")
+
+	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.0")
+	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.0")
 	runtimeOnly("org.postgresql:postgresql")
 	providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
 	testImplementation("org.springframework.boot:spring-boot-starter-test") {
