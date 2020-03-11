@@ -3,10 +3,8 @@ package com.onboarding.userland.security
 import com.onboarding.userland.security.SecurityConstants.JWT_SECRET
 import com.onboarding.userland.security.SecurityConstants.TOKEN_PREFIX
 import io.jsonwebtoken.ExpiredJwtException
-import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.MalformedJwtException
 import io.jsonwebtoken.UnsupportedJwtException
-import io.jsonwebtoken.security.Keys
 import io.jsonwebtoken.security.SignatureException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -36,10 +34,7 @@ class JwtAuthorizationFilter(authMngr: AuthenticationManager) : BasicAuthenticat
         if (!token.isNullOrEmpty() && token.startsWith(TOKEN_PREFIX)) {
             try {
                 val signingKey = JWT_SECRET.toByteArray()
-                val parsedToken = Jwts.parserBuilder()
-                        .setSigningKey(Keys.hmacShaKeyFor(signingKey))
-                        .build()
-                        .parseClaimsJws(token.replace(TOKEN_PREFIX, ""))
+                val parsedToken = parseToken(token, signingKey)
                 val username = parsedToken.body.subject
                 if (!username.isNullOrEmpty()) {
                     return UsernamePasswordAuthenticationToken(username, null, emptyList())

@@ -6,8 +6,6 @@ import com.onboarding.userland.dto.response.LoginResponse
 import com.onboarding.userland.security.SecurityConstants.AUTH_LOGIN_URL
 import com.onboarding.userland.security.SecurityConstants.CONTENT_HEADER
 import com.onboarding.userland.security.SecurityConstants.JWT_SECRET
-import io.jsonwebtoken.Jwts
-import io.jsonwebtoken.security.Keys
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
@@ -34,13 +32,9 @@ class JwtAuthenticationFilter(private val authMngr: AuthenticationManager) : Use
     override fun successfulAuthentication(request: HttpServletRequest, response: HttpServletResponse,
                                           filterChain: FilterChain, authentication: Authentication) {
         val user = authentication.principal as User
-        val signingKey = JWT_SECRET.toByteArray()
         val expirationDate = Date(System.currentTimeMillis() + 864000000)
-        val token = Jwts.builder()
-                .setSubject(user.username)
-                .setExpiration(expirationDate)
-                .signWith(Keys.hmacShaKeyFor(signingKey))
-                .compact()
+        val signingKey = JWT_SECRET.toByteArray()
+        val token = createToken(user.username, expirationDate, signingKey)
         response.apply {
             addHeader(CONTENT_HEADER, "application/json")
             val responseBody = LoginResponse(token, expirationDate.toString())
