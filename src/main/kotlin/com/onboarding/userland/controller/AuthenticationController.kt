@@ -1,6 +1,5 @@
 package com.onboarding.userland.controller
 
-import com.onboarding.userland.dto.request.LoginRequest
 import com.onboarding.userland.dto.request.RegistrationRequest
 import com.onboarding.userland.dto.response.GeneralSuccessResponse
 import com.onboarding.userland.service.AuthenticationService
@@ -20,14 +19,9 @@ class AuthenticationController @Autowired constructor(private val service: Authe
     fun registerUser(@RequestBody @Valid registrationRequest: RegistrationRequest): GeneralSuccessResponse {
         return with(registrationRequest) {
             if (password == passwordConfirm) {
-                service.register(registrationRequest)
+                service.register(this)
             } else throw InvalidParameterException()
         }
-    }
-
-    @PostMapping(value = ["/login"], consumes = [APPLICATION_JSON_VALUE])
-    fun login(@RequestBody @Valid loginRequest: LoginRequest): GeneralSuccessResponse {
-        return service.login(loginRequest)
     }
 
 //    @PostMapping(value = ["/password/forgot"], consumes = [APPLICATION_JSON_VALUE])

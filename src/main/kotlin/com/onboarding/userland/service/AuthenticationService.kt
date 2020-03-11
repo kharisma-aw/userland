@@ -1,20 +1,15 @@
 package com.onboarding.userland.service
 
-import com.onboarding.userland.dto.request.LoginRequest
 import com.onboarding.userland.dto.request.RegistrationRequest
 import com.onboarding.userland.dto.response.GeneralSuccessResponse
 import com.onboarding.userland.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.crypto.password.PasswordEncoder
-import java.security.InvalidParameterException
-import javax.persistence.EntityNotFoundException
 
-class AuthenticationService {
-    @Autowired
-    lateinit var repository: UserRepository
-    @Autowired
-    lateinit var encoder: PasswordEncoder
-
+class AuthenticationService @Autowired constructor(
+        private val repository: UserRepository,
+        private val encoder: PasswordEncoder
+) {
     fun register(registrationRequest: RegistrationRequest): GeneralSuccessResponse {
         println("Data received: \n$registrationRequest")
         with(registrationRequest) {
@@ -31,14 +26,5 @@ class AuthenticationService {
                     "Detail:\n$registered")
         }
         return GeneralSuccessResponse
-    }
-
-    fun login(loginRequest: LoginRequest): GeneralSuccessResponse {
-        val user = repository.findByEmail(loginRequest.email) ?: throw EntityNotFoundException()
-        if (encoder.matches(loginRequest.password, user.password)) {
-            return GeneralSuccessResponse
-        } else {
-            throw InvalidParameterException()
-        }
     }
 }
