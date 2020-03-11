@@ -15,12 +15,9 @@ import javax.validation.Valid
 
 @RestController
 @RequestMapping(value = ["/auth"], produces = [APPLICATION_JSON_VALUE])
-class AuthenticationController {
-    @Autowired
-    lateinit var service: AuthenticationService
-
+class AuthenticationController @Autowired constructor(private val service: AuthenticationService) {
     @PostMapping(value = ["/register"], consumes = [APPLICATION_JSON_VALUE])
-    fun register(@RequestBody @Valid registrationRequest: RegistrationRequest): GeneralSuccessResponse {
+    fun registerUser(@RequestBody @Valid registrationRequest: RegistrationRequest): GeneralSuccessResponse {
         return with(registrationRequest) {
             if (password == passwordConfirm) {
                 service.register(registrationRequest)

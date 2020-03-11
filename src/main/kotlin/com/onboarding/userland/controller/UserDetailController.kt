@@ -11,10 +11,7 @@ import javax.validation.Valid
 
 @RestController
 @RequestMapping(value = ["/me"], produces = [APPLICATION_JSON_VALUE])
-class UserDetailController {
-    @Autowired
-    lateinit var service: UserDetailService
-
+class UserDetailController @Autowired constructor(val service: UserDetailService) {
     @GetMapping
     fun getDetail(@RequestParam("id") id: Long): BasicInfoResponse {
         return service.getUserDetail(id)
@@ -25,12 +22,12 @@ class UserDetailController {
         return service.updateBasicInfo(basicInfo)
     }
 
-    @PostMapping
+    @PostMapping("/picture")
     fun updatePicture(@RequestBody @Valid url: String): GeneralSuccessResponse {
         return service.updatePicture(url)
     }
 
-    @PostMapping
+    @PostMapping("/email")
     fun updateEmail(@RequestBody @Valid email: String): GeneralSuccessResponse {
         return service.updateEmail(email)
     }
