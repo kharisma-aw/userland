@@ -5,13 +5,11 @@ import com.onboarding.userland.dto.response.BasicInfoResponse
 import com.onboarding.userland.dto.response.GeneralSuccessResponse
 import com.onboarding.userland.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
+import javax.persistence.EntityNotFoundException
 
-class UserDetailService {
-    @Autowired
-    lateinit var repository: UserRepository
-
-    fun getUserDetail(id: Long): BasicInfoResponse {
-        val user = repository.findById(id).get()
+class UserDetailService @Autowired constructor(private val repository: UserRepository) {
+    fun getUserDetail(email: String): BasicInfoResponse {
+        val user = repository.findByEmail(email) ?: throw EntityNotFoundException()
         return with(user) {
             BasicInfoResponse(
                     this.id,
@@ -25,20 +23,20 @@ class UserDetailService {
         }
     }
 
-    fun updateBasicInfo(basicInfo: BasicInfoRequest): GeneralSuccessResponse {
+    fun updateBasicInfo(email: String, basicInfo: BasicInfoRequest): GeneralSuccessResponse {
         return with(basicInfo) {
-            val num = repository.updateBasicInfo(fullname, location ?: "", bio ?: "", web ?: "")
+            val num = repository.updateBasicInfo(email, fullname, location ?: "", bio ?: "", web ?: "")
             if (num == 1) GeneralSuccessResponse else throw RuntimeException()
         }
     }
 
-    fun updatePicture(url: String): GeneralSuccessResponse {
-        val num = repository.updatePicture(url)
+    fun updatePicture(email: String, url: String): GeneralSuccessResponse {
+        val num = repository.updatePicture(email, url)
         return if (num == 1) GeneralSuccessResponse else throw RuntimeException()
     }
 
-    fun updateEmail(email: String): GeneralSuccessResponse {
-        val num = repository.updateEmail(email)
+    fun updateEmail(email: String, newEmail: String): GeneralSuccessResponse {
+        val num = repository.updateEmail(email, newEmail)
         return if (num == 1) GeneralSuccessResponse else throw RuntimeException()
     }
 }
