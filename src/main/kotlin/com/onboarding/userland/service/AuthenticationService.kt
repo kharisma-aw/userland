@@ -10,21 +10,15 @@ class AuthenticationService @Autowired constructor(
         private val repository: UserRepository,
         private val encoder: PasswordEncoder
 ) {
-    fun register(registrationRequest: RegistrationRequest): GeneralSuccessResponse {
-        println("Data received: \n$registrationRequest")
-        with(registrationRequest) {
-            val hashedPassword = encoder.encode(password)
-            val registered = repository.save(
-                    com.onboarding.userland.model.User(
-                            fullname = this.fullname,
-                            email = this.email,
-                            password = hashedPassword,
-                            createdAt = java.sql.Date.valueOf(java.time.LocalDate.now())
-                    )
-            )
-            println("Registered with user id: ${registered.id}\n" +
-                    "Detail:\n$registered")
-        }
-        return GeneralSuccessResponse
+    fun registerUser(fullname: String, email: String, password: String) {
+        val hashedPassword = encoder.encode(password)
+        repository.save(
+                com.onboarding.userland.model.User(
+                        fullname = fullname,
+                        email = email,
+                        password = hashedPassword,
+                        createdAt = java.sql.Date.valueOf(java.time.LocalDate.now())
+                )
+        )
     }
 }

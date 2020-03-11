@@ -17,11 +17,12 @@ import javax.validation.Valid
 class AuthenticationController @Autowired constructor(private val service: AuthenticationService) {
     @PostMapping(value = ["/register"], consumes = [APPLICATION_JSON_VALUE])
     fun registerUser(@RequestBody @Valid registrationRequest: RegistrationRequest): GeneralSuccessResponse {
-        return with(registrationRequest) {
+        with(registrationRequest) {
             if (password == passwordConfirm) {
-                service.register(this)
+                service.registerUser(fullname, email, password)
             } else throw InvalidParameterException()
         }
+        return GeneralSuccessResponse
     }
 
 //    @PostMapping(value = ["/password/forgot"], consumes = [APPLICATION_JSON_VALUE])
