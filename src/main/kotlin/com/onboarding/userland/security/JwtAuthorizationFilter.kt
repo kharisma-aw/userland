@@ -14,7 +14,6 @@ import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
-import java.util.*
 import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -36,7 +35,6 @@ class JwtAuthorizationFilter(authMngr: AuthenticationManager) : BasicAuthenticat
         val token = request.getHeader(SecurityConstants.TOKEN_HEADER)
         if (!token.isNullOrEmpty() && token.startsWith(TOKEN_PREFIX)) {
             try {
-//                val signingKey = Base64.getDecoder().decode(JWT_SECRET)
                 val signingKey = JWT_SECRET.toByteArray()
                 val parsedToken = Jwts.parserBuilder()
                         .setSigningKey(Keys.hmacShaKeyFor(signingKey))
@@ -62,6 +60,6 @@ class JwtAuthorizationFilter(authMngr: AuthenticationManager) : BasicAuthenticat
     }
 
     companion object {
-        val log: Logger = LoggerFactory.getLogger(JwtAuthorizationFilter::class.java)
+        private val log: Logger = LoggerFactory.getLogger(JwtAuthorizationFilter::class.java)
     }
 }

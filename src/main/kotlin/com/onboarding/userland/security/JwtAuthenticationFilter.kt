@@ -2,7 +2,9 @@ package com.onboarding.userland.security
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.onboarding.userland.dto.request.LoginRequest
+import com.onboarding.userland.dto.response.LoginResponse
 import com.onboarding.userland.security.SecurityConstants.AUTH_LOGIN_URL
+import com.onboarding.userland.security.SecurityConstants.CONTENT_HEADER
 import com.onboarding.userland.security.SecurityConstants.JWT_SECRET
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
@@ -32,13 +34,18 @@ class JwtAuthenticationFilter(private val authMngr: AuthenticationManager) : Use
     override fun successfulAuthentication(request: HttpServletRequest, response: HttpServletResponse,
                                           filterChain: FilterChain, authentication: Authentication) {
         val user = authentication.principal as User
-//        val signingKey = Base64.getDecoder().decode(JWT_SECRET)
         val signingKey = JWT_SECRET.toByteArray()
+        val expirationDate = Date(System.currentTimeMillis() + 864000000)
         val token = Jwts.builder()
                 .setSubject(user.username)
-                .setExpiration(Date(System.currentTimeMillis() + 864000000))
+                .setExpiration(expirationDate)
                 .signWith(Keys.hmacShaKeyFor(signingKey))
                 .compact()
-        response.addHeader(SecurityConstants.TOKEN_HEADER, SecurityConstants.TOKEN_PREFIX + token)
+        response.apply {
+            addHeader(CONTENT_HEADER, "application/json")
+            val responseBody = LoginResponse(token, expirationDate.toString())
+            writer.write(ObjectMapper().writeValueAsString(responseBody))
+            flushBuffer()
+        }
     }
 }
