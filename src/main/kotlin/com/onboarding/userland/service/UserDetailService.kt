@@ -5,8 +5,10 @@ import com.onboarding.userland.dto.response.BasicInfoResponse
 import com.onboarding.userland.dto.response.GeneralSuccessResponse
 import com.onboarding.userland.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Component
 import javax.persistence.EntityNotFoundException
 
+@Component
 class UserDetailService @Autowired constructor(private val repository: UserRepository) {
     fun getUserDetail(email: String): BasicInfoResponse {
         val user = repository.findByEmail(email) ?: throw EntityNotFoundException()
@@ -38,5 +40,15 @@ class UserDetailService @Autowired constructor(private val repository: UserRepos
     fun updateEmail(email: String, newEmail: String): GeneralSuccessResponse {
         val num = repository.updateEmail(email, newEmail)
         return if (num == 1) GeneralSuccessResponse else throw RuntimeException()
+    }
+
+    fun changePassword(email: String, newPassword: String): GeneralSuccessResponse {
+        val num = repository.updatePassword(email, newPassword)
+        return if (num == 1) GeneralSuccessResponse else throw RuntimeException()
+    }
+
+    fun validatePassword(email: String, password: String): Boolean {
+        val savedPassword = repository.getPassword(email)
+        return password == savedPassword
     }
 }
