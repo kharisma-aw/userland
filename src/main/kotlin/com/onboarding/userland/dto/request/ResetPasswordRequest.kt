@@ -9,4 +9,4 @@ data class ResetPasswordRequest(
         val password: String,
         @JsonProperty("password_confirm")
         val passwordConfirm: String
-)
+) : BaseRequest()

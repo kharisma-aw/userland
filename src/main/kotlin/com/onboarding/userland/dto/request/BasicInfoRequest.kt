@@ -11,4 +11,4 @@ data class BasicInfoRequest(
         val bio: String?,
         @JsonProperty("web")
         val web: String?
-)
+) : BaseRequest()
