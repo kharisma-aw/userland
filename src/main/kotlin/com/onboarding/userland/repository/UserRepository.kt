@@ -35,6 +35,9 @@ interface UserRepository : CrudRepository<User, Long>, JpaSpecificationExecutor<
     @Query("UPDATE User u SET u.email = :new_email WHERE u.email = :email")
     fun updateEmail(@Param("email") email: String, @Param("new_email") newEmail: String): Int
 
+    @Query("SELECT u.password FROM User u WHERE u.email = :email")
+    fun getPassword(@Param("email") email: String): String
+
     @Modifying
     @Transactional
     @Query("UPDATE User u SET u.password = :password WHERE u.email = :email")
