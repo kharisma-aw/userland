@@ -1,5 +1,8 @@
 package com.onboarding.userland.security
 
+import com.onboarding.userland.service.JwtService
+import com.onboarding.userland.service.UserDetailsServiceImpl
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
@@ -15,15 +18,17 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
 
 @EnableWebSecurity
-class SecurityConfiguration(val userDetailsService: UserDetailsServiceImpl) : WebSecurityConfigurerAdapter() {
+class SecurityConfiguration @Autowired constructor(
+        private val userDetailsService: UserDetailsServiceImpl,
+        private val jwtService: JwtService
+) : WebSecurityConfigurerAdapter() {
     override fun configure(http: HttpSecurity) {
         http.cors().and().csrf().disable().authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/auth/register").permitAll()
-                .antMatchers(HttpMethod.POST, "/auth/login").permitAll()
+                .antMatchers(HttpMethod.POST, "/auth/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .addFilter(JwtAuthenticationFilter(authenticationManager()))
-                .addFilter(JwtAuthorizationFilter(authenticationManager()))
+                .addFilter(JwtAuthenticationFilter(authenticationManager(), jwtService))
+                .addFilter(JwtAuthorizationFilter(authenticationManager(), jwtService))
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
     }

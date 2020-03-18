@@ -1,7 +1,7 @@
 package com.onboarding.userland.security
 
-import com.onboarding.userland.security.SecurityConstants.JWT_SECRET
 import com.onboarding.userland.security.SecurityConstants.TOKEN_PREFIX
+import com.onboarding.userland.service.JwtService
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.MalformedJwtException
 import io.jsonwebtoken.UnsupportedJwtException
@@ -17,7 +17,10 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 
-class JwtAuthorizationFilter(authMngr: AuthenticationManager) : BasicAuthenticationFilter(authMngr) {
+class JwtAuthorizationFilter(
+        authMngr: AuthenticationManager,
+        private val jwtService: JwtService
+) : BasicAuthenticationFilter(authMngr) {
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, chain: FilterChain) {
         val authentication = getAuthentication(request)
         if (authentication == null) {
@@ -33,8 +36,7 @@ class JwtAuthorizationFilter(authMngr: AuthenticationManager) : BasicAuthenticat
         val token = request.getHeader(SecurityConstants.TOKEN_HEADER)
         if (!token.isNullOrEmpty() && token.startsWith(TOKEN_PREFIX)) {
             try {
-                val signingKey = JWT_SECRET.toByteArray()
-                val parsedToken = parseToken(token, signingKey)
+                val parsedToken = jwtService.parseToken(token)
                 val username = parsedToken.body.subject
                 if (!username.isNullOrEmpty()) {
                     return UsernamePasswordAuthenticationToken(username, null, emptyList())
